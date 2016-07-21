@@ -1,0 +1,6 @@
+<h1>{{ card.card_name }}</h1>
+<ul>
+{% for list in card.list_set.all %}
+    <li>{{ list.list_name }}</li>
+{% endfor %}
+</ul>

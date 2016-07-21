@@ -1,0 +1,6 @@
+<h1>{{ board.board_name }}</h1>
+<ul>
+{% for card in board.card_set.all %}
+    <li><a href="/MyTrello/{{ board.id }}/{{ card.id }}">{{ card.card_name }}</a></li>
+{% endfor %}
+</ul>
