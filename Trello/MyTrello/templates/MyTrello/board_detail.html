@@ -1,6 +1,10 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'MyTrello/css/style.css' %}" />
+
 <h1>{{ board.board_name }}</h1>
 <ul>
 {% for card in board.card_set.all %}
-    <li><a href="/MyTrello/{{ board.id }}/{{ card.id }}">{{ card.card_name }}</a></li>
+   <a href="/MyTrello/{{ board.id }}/{{ card.id }}"><button type="button" class="link_button">{{ card.card_name }}</button></a>
 {% endfor %}
 </ul>

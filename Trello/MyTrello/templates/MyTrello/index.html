@@ -1,7 +1,12 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'MyTrello/css/style.css' %}" />
+
+<h1>My Board(s):</h1>
 {% if latest_board_list %}
     <ul>
     {% for board in latest_board_list %}
-        <li><a href="/MyTrello/{{ board.id }}/">{{ board.board_name }}</a></li>
+      <a href="/MyTrello/{{ board.id }}/"><button type="button" class="link_button">{{ board.board_name }}</button></a>
     {% endfor %}
     </ul>
 {% else %}
