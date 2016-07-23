@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.db import models
 
 # Create your models here.
+from django.forms import ModelForm
+
 
 class Board(models.Model):
     board_name = models.CharField(max_length=150)
@@ -15,6 +17,11 @@ class Card(models.Model):
     card_name = models.CharField(max_length=150)
     def __str__(self):
         return self.card_name
+
+class BoardForm(ModelForm):
+    class Meta:
+        model = Board
+        fields = '__all__'
 
 
 class List(models.Model):

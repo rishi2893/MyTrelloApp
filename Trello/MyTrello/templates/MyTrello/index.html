@@ -1,14 +1,27 @@
-{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+      {% load staticfiles %}
+    <meta charset="utf-8" />
+    <title>MyTrello</title>
+    <script src="{% static 'MyTrello/js/react.js' %}"></script>
+    <script src="{% static 'MyTrello/js/react-dom.js' %}"></script>
+    <script src="{% static 'MyTrello/js/browser.min.js' %}"></script>
+    <script src="{% static 'MyTrello/js/jquery.min.js' %}"></script>
+    <script src="{% static 'MyTrello/js/remarkable.min.js' %}"></script>
+  </head>
+  <body>
+    <div id="content"></div>
 
-<link rel="stylesheet" type="text/css" href="{% static 'MyTrello/css/style.css' %}" />
+    <script>var csrftoken = '{{csrf_token}}';</script>
 
-<h1>My Board(s):</h1>
-{% if latest_board_list %}
-    <ul>
-    {% for board in latest_board_list %}
-      <a href="/MyTrello/{{ board.id }}/"><button type="button" class="link_button">{{ board.board_name }}</button></a>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No Boards present!! Sorry! </p>
-{% endif %}
+
+    <script type="text/babel" src="{% static 'MyTrello/js/helloworld.js' %}"></script>
+    <script type="text/babel">
+      // To get started with this tutorial running your own code, simply remove
+      // the script tag loading scripts/example.js and start writing code here.
+    </script>
+  </body>
+
+</html>
+
