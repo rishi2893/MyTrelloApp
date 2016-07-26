@@ -18,11 +18,6 @@ class Card(models.Model):
     def __str__(self):
         return self.card_name
 
-class BoardForm(ModelForm):
-    class Meta:
-        model = Board
-        fields = '__all__'
-
 
 class List(models.Model):
     card = models.ForeignKey(Card, on_delete=models.CASCADE)

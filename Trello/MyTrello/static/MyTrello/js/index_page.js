@@ -9,16 +9,26 @@
  * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
+var Button = ReactBootstrap.Button;
+var Jumbotron = ReactBootstrap.Jumbotron;
+var Grid = ReactBootstrap.Grid;
+var Row = ReactBootstrap.Row;
+var Col = ReactBootstrap.Col;
 var Board = React.createClass({
   render: function() {
 
     //console.log(this.props.board_name);
     return (
       <div className="board">
-        <h2 className="boardName">
-          {this.props.board_name}
-        </h2>
+          <Col md={3} >
+            <Row md={3}>
+          <a href={"/MyTrello/" + this.props.board_number}>
+            <Button bsStyle="info">
+              <h1>{this.props.board_name}</h1>
+            </Button>
+          </a>
+              </Row>
+        </Col>
       </div>
     );
   }
@@ -72,9 +82,11 @@ var BoardBox = React.createClass({
   render: function() {
     return (
       <div className="boardBox">
-        <h1>My Boards:</h1>
+        <Grid>
+        <h1>My Board(s):</h1>
         <BoardList data={this.state.data} />
         <BoardForm onBoardSubmit={this.handleBoardSubmit} />
+          </Grid>
       </div>
     );
   }
@@ -87,7 +99,7 @@ var BoardList = React.createClass({
 
     var boardNodes = this.props.data.map(function(board) {
       return (
-        <Board board_name={board.board_name} key={board.id}>
+        <Board board_name={board.board_name} key={board.id} board_number={board.id}>
         </Board>
       );
     });
@@ -124,13 +136,13 @@ var BoardForm = React.createClass({
           value={this.state.board_name}
           onChange={this.handleBoardNameChange}
         />
-        <input type="submit" value="Post" />
+        <input type="submit" value="Submit" />
       </form>
     );
   }
 });
 
 ReactDOM.render(
-  <BoardBox url="records/" pollInterval={2000} />,
-  document.getElementById('content')
+  <BoardBox url="/MyTrello/boards/" pollInterval={2000} />,
+  document.getElementById('index_content')
 );

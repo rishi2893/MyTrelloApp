@@ -2,6 +2,7 @@
 <html>
   <head>
       {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'MyTrello/css/bootstrap.min.css' %}" />
     <meta charset="utf-8" />
     <title>MyTrello</title>
     <script src="{% static 'MyTrello/js/react.js' %}"></script>
@@ -9,14 +10,16 @@
     <script src="{% static 'MyTrello/js/browser.min.js' %}"></script>
     <script src="{% static 'MyTrello/js/jquery.min.js' %}"></script>
     <script src="{% static 'MyTrello/js/remarkable.min.js' %}"></script>
+    <script src="{% static 'MyTrello/js/react-bootstrap.min.js' %}"></script>
+    <script src="{% static 'MyTrello/js/react-bootstrap.js' %}"></script>
   </head>
   <body>
-    <div id="content"></div>
+    <div id="index_content"></div>
 
     <script>var csrftoken = '{{csrf_token}}';</script>
 
 
-    <script type="text/babel" src="{% static 'MyTrello/js/helloworld.js' %}"></script>
+    <script type="text/babel" src="{% static 'MyTrello/js/index_page.js' %}"></script>
     <script type="text/babel">
       // To get started with this tutorial running your own code, simply remove
       // the script tag loading scripts/example.js and start writing code here.
