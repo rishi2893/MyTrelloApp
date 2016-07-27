@@ -26,6 +26,20 @@ def board_detail(request, board_id):
         raise Http404("Board does not exist")
     return render(request, 'MyTrello/board_detail.html', {'board': board})
 
+def remove_board(request, board_id):
+    board = Board.objects.get(pk=board_id)
+    board.delete()
+    return HttpResponse([])
+
+def remove_card(request, card_id):
+    card = Card.objects.get(pk=card_id)
+    card.delete()
+    return HttpResponse([])
+
+def remove_list(request, list_id):
+    list = List.objects.get(pk=list_id)
+    list.delete()
+    return HttpResponse([])
 
 def index_data(request):
     info = []

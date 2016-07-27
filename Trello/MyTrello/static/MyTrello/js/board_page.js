@@ -10,16 +10,25 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 var Button = ReactBootstrap.Button;
+var Jumbotron = ReactBootstrap.Jumbotron;
+var Grid = ReactBootstrap.Grid;
+var Row = ReactBootstrap.Row;
+var Col = ReactBootstrap.Col;
+var Navbar = ReactBootstrap.Navbar;
 var Card = React.createClass({
   render: function() {
 
     //console.log(this.props.card_name);
     return (
       <div className="card">
-        <h2 className="cardName">
-          <Button bsStyle="primary" bsSize="large">{this.props.card_name}</Button>
-          <ListBox url={"/MyTrello/lists/" + this.props.cardnumber + "/" } pollInterval={2000} />
-        </h2>
+        <h2 className="cardName"></h2>
+        <Col md={3}>
+          <Jumbotron>
+          <h4> <b>{this.props.card_name}</b></h4>
+            <ListBox url={"/MyTrello/lists/" + this.props.cardnumber + "/" } pollInterval={2000} />
+          </Jumbotron>
+
+        </Col>
       </div>
     );
   }
@@ -75,9 +84,19 @@ var CardBox = React.createClass({
   render: function() {
     return (
       <div className="cardBox">
-        <h1>Welcome to Board:{this.props.board_name} </h1>
-        <CardList data={this.state.data} />
-        <CardForm onCardSubmit={this.handleCardSubmit} />
+        <Navbar inverse>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <a href="/MyTrello">MyTrelloApp</a>
+            </Navbar.Brand>
+            <Navbar.Toggle/>
+          </Navbar.Header>
+        </Navbar>
+        <Grid>
+          <h1>Welcome to Board:{this.props.board_name} </h1>
+            <CardList data={this.state.data} />
+            <CardForm onCardSubmit={this.handleCardSubmit} />
+        </Grid>
       </div>
     );
   }
@@ -123,11 +142,10 @@ var CardForm = React.createClass({
       <form className="cardForm" onSubmit={this.handleSubmit}>
         <input
           type="text"
-          placeholder="Add Card..."
+          placeholder="Add a Card..."
           value={this.state.card_name}
           onChange={this.handleCardNameChange}
         />
-        <input type="submit" value="Submit" />
       </form>
     );
   }
@@ -139,11 +157,8 @@ var List = React.createClass({
     //console.log(this.props.list_name);
     return (
       <div className="list">
-        <h2 className="listName">
-          <ul>
-          <li>{this.props.list_name}</li>
-          </ul>
-        </h2>
+        <h2 className="listName"></h2>
+         <Button bsStyle="primary" bsSize="large"> {this.props.list_name}</Button>
       </div>
     );
   }
@@ -244,11 +259,10 @@ var ListForm = React.createClass({
       <form className="listForm" onSubmit={this.handleSubmit}>
         <input
           type="text"
-          placeholder="Add List.."
+          placeholder="Add a List.."
           value={this.state.list_name}
           onChange={this.handleListNameChange}
         />
-        <input type="submit" value="Submit" />
       </form>
     );
   }

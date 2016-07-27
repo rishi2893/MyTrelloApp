@@ -10,10 +10,13 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 var Button = ReactBootstrap.Button;
+var MenuItem = ReactBootstrap.MenuItem;
+var SplitButton = ReactBootstrap.SplitButton;
 var Jumbotron = ReactBootstrap.Jumbotron;
 var Grid = ReactBootstrap.Grid;
 var Row = ReactBootstrap.Row;
 var Col = ReactBootstrap.Col;
+var Navbar = ReactBootstrap.Navbar;
 var Board = React.createClass({
   render: function() {
 
@@ -21,13 +24,10 @@ var Board = React.createClass({
     return (
       <div className="board">
           <Col md={3} >
-            <Row md={3}>
-          <a href={"/MyTrello/" + this.props.board_number}>
-            <Button bsStyle="info">
-              <h1>{this.props.board_name}</h1>
-            </Button>
-          </a>
-              </Row>
+            < SplitButton href={"/MyTrello/" + this.props.board_number} bsStyle="info" bsSize="large" title={this.props.board_name} >
+              <MenuItem eventKey="1">Delete Board</MenuItem>
+              <MenuItem eventKey="2">Edit Board Name</MenuItem>
+            </SplitButton>
         </Col>
       </div>
     );
@@ -82,11 +82,19 @@ var BoardBox = React.createClass({
   render: function() {
     return (
       <div className="boardBox">
+        <Navbar inverse>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <a href="">MyTrelloApp</a>
+            </Navbar.Brand>
+            <Navbar.Toggle/>
+          </Navbar.Header>
+        </Navbar>
         <Grid>
-        <h1>My Board(s):</h1>
-        <BoardList data={this.state.data} />
-        <BoardForm onBoardSubmit={this.handleBoardSubmit} />
-          </Grid>
+          <h1>My Board(s):</h1>
+            <BoardList data={this.state.data} />
+            <BoardForm onBoardSubmit={this.handleBoardSubmit} />
+        </Grid>
       </div>
     );
   }
@@ -130,13 +138,15 @@ var BoardForm = React.createClass({
   render: function() {
     return (
       <form className="boardForm" onSubmit={this.handleSubmit}>
+
+      <Button>
         <input
           type="text"
-          placeholder="Board Name.."
+          placeholder="Create a Board.."
           value={this.state.board_name}
           onChange={this.handleBoardNameChange}
         />
-        <input type="submit" value="Submit" />
+      </Button>
       </form>
     );
   }
