@@ -17,19 +17,111 @@ var Grid = ReactBootstrap.Grid;
 var Row = ReactBootstrap.Row;
 var Col = ReactBootstrap.Col;
 var Navbar = ReactBootstrap.Navbar;
-var Board = React.createClass({
-  render: function() {
+var Modal = ReactBootstrap.Modal;
+var ModalBody = ReactBootstrap.ModalBody;
 
-    //console.log(this.props.board_name);
+var Board = React.createClass({
+  getInitialState: function () {
+    return {urldel: "/MyTrello/removed_boards/" + this.props.board_number ,
+      urledit: "/MyTrello/edited_boards/" + this.props.board_number, show: false};
+  },
+  handleRemove: function() {
+    $.ajax({
+      url: this.state.urldel,
+      dataType: 'json',
+      data: this.props.board_number,
+      success: function (data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function (xhr, status, err) {
+        this.setState({data: this.props.board_number});
+        console.error(this.state.urldel, status, err.toString());
+      }.bind(this),
+    });
+  },
+
+    handleEdit: function() {
+    this.setState({show: true})
+    } ,
+  handleBoardChangeSubmit: function(board){
+    console.log(board.board_name)
+    console.log(board.csrfmiddlewaretoken)
+    $.ajax({
+      url: this.state.urledit,
+      dataType: 'json',
+      type: 'PUT',
+      data: board,
+      success: function (data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function (xhr, status, err) {
+        this.setState({data: board});
+        console.error(this.state.urldel, status, err.toString());
+      }.bind(this),
+    });
+  },
+  render: function() {
+    let close = () => this.setState({ show: false});
     return (
       <div className="board">
           <Col md={3} >
             < SplitButton href={"/MyTrello/" + this.props.board_number} bsStyle="info" bsSize="large" title={this.props.board_name} >
-              <MenuItem eventKey="1">Delete Board</MenuItem>
-              <MenuItem eventKey="2">Edit Board Name</MenuItem>
+              <MenuItem eventKey="1" onClick={this.handleRemove}>Delete Board</MenuItem>
+              <MenuItem eventKey="2" onClick={this.handleEdit}>Edit Board Name</MenuItem>
             </SplitButton>
         </Col>
+        <Modal
+          show={this.state.show}
+          onHide={close}
+          container={this}
+          aria-labelledby="contained-modal-title"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title">Rename Board..</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <NewBoardName  board_number = {this.props.board_number}  onBoardChangeSubmit={this.handleBoardChangeSubmit}/>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={close}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+
       </div>
+    );
+  }
+});
+
+var NewBoardName = React.createClass({
+  getInitialState: function () {
+    return {board_name:  ''}
+  },
+  handleBoardNameChange: function(e){
+    this.setState({board_name: e.target.value })
+  },
+  handleBoardModify: function (e) {
+    e.preventDefault();
+    var board_name = this.state.board_name.trim();
+    console.log(board_name)
+    if (!board_name) {
+      return;
+    }
+    this.props.onBoardChangeSubmit({board_name: board_name, csrfmiddlewaretoken: csrftoken});
+  }
+  ,
+  render: function () {
+  //  console.log(this.props.new_board_name)
+    return(
+    <form className="newBoardName" onSubmit={this.handleBoardModify}>
+      <Button>
+        <input
+          type="text"
+          placeholder="Rename the Board.."
+          value={this.state.board_name}
+          onChange={this.handleBoardNameChange}
+        />
+      </Button>
+      </form>
     );
   }
 });
@@ -107,7 +199,7 @@ var BoardList = React.createClass({
 
     var boardNodes = this.props.data.map(function(board) {
       return (
-        <Board board_name={board.board_name} key={board.id} board_number={board.id}>
+        <Board board_name={board.board_name} key={board.id} board_number={board.id} >
         </Board>
       );
     });

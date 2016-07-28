@@ -1,6 +1,5 @@
 import datetime
 from django.http.response import Http404
-
 from django.shortcuts import render, get_object_or_404
 
 from datetime import datetime
@@ -29,7 +28,7 @@ def board_detail(request, board_id):
 def remove_board(request, board_id):
     board = Board.objects.get(pk=board_id)
     board.delete()
-    return HttpResponse([])
+    return HttpResponse(json.dumps([]))
 
 def remove_card(request, card_id):
     card = Card.objects.get(pk=card_id)
@@ -40,6 +39,28 @@ def remove_list(request, list_id):
     list = List.objects.get(pk=list_id)
     list.delete()
     return HttpResponse([])
+
+def edit_board(request, board_id):
+    if request.method == 'PUT':
+        print "hi"
+        new_board_name = request.PUT['board_name']
+        board = Board.objects.get(pk=board_id)
+        board.board_name = new_board_name
+        board.save()
+    return HttpResponse(json.dumps([]))
+
+def edit_card(request, card_id, new_card_name):
+    card = Card.objects.get(pk=card_id)
+    card.card_name = new_card_name
+    card.save()
+    return HttpResponse(json.dumps([]))
+
+
+def edit_list(request, list_id, new_list_name):
+    list = List.objects.get(pk=list_id)
+    list.list_name = new_list_name
+    list.save()
+    return HttpResponse(json.dumps([]))
 
 def index_data(request):
     info = []
