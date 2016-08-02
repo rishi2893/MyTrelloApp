@@ -10,11 +10,15 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 var Button = ReactBootstrap.Button;
+var MenuItem = ReactBootstrap.MenuItem;
+var SplitButton = ReactBootstrap.SplitButton;
 var Jumbotron = ReactBootstrap.Jumbotron;
 var Grid = ReactBootstrap.Grid;
 var Row = ReactBootstrap.Row;
 var Col = ReactBootstrap.Col;
 var Navbar = ReactBootstrap.Navbar;
+var Modal = ReactBootstrap.Modal;
+var ModalBody = ReactBootstrap.ModalBody;
 var Card = React.createClass({
   render: function() {
 
@@ -152,18 +156,165 @@ var CardForm = React.createClass({
 });
 
 var List = React.createClass({
+  getInitialState: function(){
+    return {urldel:"/MyTrello/removed_lists/" + this.props.list_number,
+            urledit:"/MyTrello/edited_lists/" + this.props.list_number, show1: false, show2: false}
+  },
+  handleShow: function(){
+    this.setState({show1: true});
+  },
+  handleEdit: function(){
+    this.setState({show2: true});
+  },
+  handleRemove: function(){
+    $.ajax({
+      url: this.state.urldel,
+      dataType: 'json',
+      data: this.props.list_number,
+      success: function (data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function (xhr, status, err) {
+        this.setState({data: this.props.list_number});
+        console.error(this.state.urldel, status, err.toString());
+      }.bind(this),
+    });
+    
+  },
+  handleListChangeSubmit: function(list){
+    console.log("Im here");
+    console.log(list.list_name);
+    console.log(list.created_by);
+    $.ajax({
+      url: this.state.urledit,
+      dataType: 'json',
+      data: list,
+      type: 'POST',
+      success: function (data) {
+        console.log("Success");
+        this.setState({data: data});
+      }.bind(this),
+      error: function (xhr, status, err) {
+        this.setState({data: list});
+        console.error(this.state.urledit, status, err.toString());
+      }.bind(this),
+    });
+  },
   render: function() {
-
+    let close1 = () => this.setState({ show1: false});
+    let close2 = () => this.setState({ show2: false});
+    
     //console.log(this.props.list_name);
     return (
       <div className="list">
         <h2 className="listName"></h2>
-         <Button bsStyle="primary" bsSize="large"> {this.props.list_name}</Button>
+         <SplitButton onClick={this.handleShow} bsStyle="primary" bsSize="large" title={this.props.list_name}>
+            <MenuItem eventKey="1" onClick={this.handleEdit}>Edit Details</MenuItem>
+            <MenuItem eventKey="2" onClick={this.handleRemove}>Delete Task</MenuItem>
+         </SplitButton>
+         
+         <Modal
+          show={this.state.show1}
+          onHide={close1}
+          container={this}
+          aria-labelledby="contained-modal-title"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title">Details: {this.props.list_name}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <h4>Description: {this.props.list_description}</h4>
+            <h4>Created By: {this.props.created_by}</h4>
+            <h4>Create Date: {this.props.create_date}</h4>
+            <h4>Due Date: {this.props.due_date}</h4>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={close1}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+        
+        <Modal
+          show={this.state.show2}
+          onHide={close2}
+          container={this}
+          aria-labelledby="contained-modal-title"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title">Edit Task: {this.props.list_name}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+              <NewListName  list_name = {this.props.list_name}
+              onListChangeSubmit={this.handleListChangeSubmit} list_description = {this.props.list_description}
+              create_date = {this.props.create_date} due_date = {this.props.due_date}
+              created_by = {this.props.created_by}/>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={close2}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+        
       </div>
     );
   }
 });
-
+var NewListName = React.createClass({
+  getInitialState: function () {
+    return {list_name:  this.props.list_name, list_description: this.props.list_description,
+    create_date: this.props.create_date, created_by: this.props.created_by, due_date: this.props.due_date}
+  },
+  handleListNameChange: function(e){
+    this.setState({list_name: e.target.value })
+  },
+  handleDescriptionChange: function(e){
+    this.setState({list_description: e.target.value })
+  },
+  handleCreateByChange: function(e){
+    this.setState({created_by: e.target.value })
+  },
+  handleDueDateChange: function(e){
+    this.setState({due_date: e.target.value })
+  },
+  handleListModify: function (e) {
+    e.preventDefault();
+    var list_name = this.state.list_name.trim();
+    var list_description = this.state.list_description.trim();
+    var created_by = this.state.created_by.trim();
+    var due_date = this.state.due_date.trim();
+    this.props.onListChangeSubmit({list_name: list_name, list_description: list_description,
+                                   created_by: created_by, due_date: due_date,csrfmiddlewaretoken: csrftoken});
+  },
+  render: function () {
+    return(
+    <form className="newListName" onSubmit={this.handleListModify}>
+      <h4><input
+          type="text"
+          placeholder="Rename Task.."
+          value={this.state.list_name}
+          onChange={this.handleListNameChange}
+        /></h4>
+      <h4><input
+          type="text"
+          placeholder="Add description.."
+          value={this.state.list_description}
+          onChange={this.handleDescriptionChange}
+        /></h4>
+      <h4><input
+          type="text"
+          placeholder="Created By ??"
+          value={this.state.created_by}
+          onChange={this.handleCreateByChange}
+        /></h4>
+     <h4><input
+          type="text"
+          placeholder="Due date??"
+          value={this.state.due_date}
+          onChange={this.handleDueDateChange}
+        /></h4>
+      <h4><input type="submit" value="Post" /></h4>
+      </form>
+    );
+  }
+});
 var ListBox = React.createClass({
   loadListsFromServer: function() {
     $.ajax({
@@ -225,8 +376,11 @@ var ListList = React.createClass({
     //console.log(this.props.data);
 
     var listNodes = this.props.data.map(function(list) {
+      
+
       return (
-        <List list_name={list.list_name} key={list.id}>
+        <List list_name={list.list_name} key={list.id} list_number={list.id} list_description={list.list_description}
+        create_date={list.create_date} due_date={list.due_date} created_by={list.created_by} >
         </List>
       );
     });
@@ -248,10 +402,15 @@ var ListForm = React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
     var list_name = this.state.list_name.trim();
+    var list_description = "";
+    var create_date = "";
+    var due_date = "";
+    var created_by = "";
     if (!list_name) {
       return;
     }
-    this.props.onListSubmit({list_name: list_name, csrfmiddlewaretoken: csrftoken});
+    this.props.onListSubmit({list_name: list_name, list_description: list_description, create_date: create_date,
+                            due_date: due_date, created_by: created_by, csrfmiddlewaretoken: csrftoken});
     this.setState({list_name: ''});
   },
   render: function() {

@@ -22,6 +22,10 @@ class Card(models.Model):
 class List(models.Model):
     card = models.ForeignKey(Card, on_delete=models.CASCADE)
     list_name = models.CharField(max_length=500)
+    list_description = models.CharField(max_length=500)
+    create_date = models.CharField(max_length=100)
+    due_date = models.CharField(max_length=100)
+    created_by = models.CharField(max_length=100)
     def __str__(self):
         return self.list_name
 
